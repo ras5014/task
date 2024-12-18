@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Prisma Notes</title>
+        <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 22px;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(90deg, #4b79a1, #283e51);
+      color: #fff;
+      padding: 10px 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    section {
+      padding: 20px;
+      page-break-after: always;
+    }
+    section:last-child {
+      page-break-after: auto;
+    }
+    h2 {
+      color: #444;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+    }
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    code {
+      font-family: Consolas, "Courier New", monospace;
+    }
+    .comment {
+      color: #6a9955;
+      font-style: italic;
+    }
+    .keyword {
+      color: #569cd6;
+    }
+    .string {
+      color: #ce9178;
+    }
+    .function {
+      color: #dcdcaa;
+    }
+    .field {
+      color: #9cdcfe;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    .page-btn {
+      padding: 8px 16px;
+      margin: 0 5px;
+      background: linear-gradient(90deg, #4b79a1, #283e51);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .page-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+    </head>
+    <body>
+        <header>
+            <h1>Prisma Notes</h1>
+        </header>
+        <section>
+            <h2>Docker Commands</h2>
+            <ul>
+                <li><strong>Run Docker Compose:</strong> <code
+                        class="keyword">docker compose up</code> (<code
+                        class="comment">--build</code> to rebuild, <code
+                        class="comment">--watch</code> to watch for
+                    changes)</li>
+                <li><strong>See Running Containers:</strong> <code
+                        class="keyword">docker ps</code></li>
+                <li><strong>Enter Bash of a Container:</strong> <code
+                        class="keyword">docker exec -it &lt;container-id&gt;
+                        /bin/bash</code></li>
+            </ul>
+
+            <h2>Prisma Basics</h2>
+            <ul>
+                <li><strong>Install Prisma:</strong> <code class="keyword">npx
+                        prisma init</code></li>
+                <li><strong>Push Schema Changes to DB:</strong> <code
+                        class="keyword">npx prisma db push</code>
+                    <ul>
+                        <li><span class="comment">// Syncs schema.prisma with
+                                the database</span></li>
+                        <li><span class="comment">// Installs Prisma
+                                Client</span> (<code class="keyword">npx prisma
+                                generate</code> or <code class="keyword">pnpm
+                                dlx prisma generate</code>)</li>
+                    </ul>
+                </li>
+                <li><strong>View Database:</strong> <code class="keyword">npx
+                        prisma studio</code></li>
+            </ul>
+
+            <h2>Next.js Prisma Client</h2>
+            <p>To avoid instantiating the Prisma Client in every file, follow
+                the <a
+                    href="https://www.prisma.io/docs/orm/more/help-and-troubleshooting/help-articles/nextjs-prisma-client-dev-practices">official
+                    docs</a>.</p>
+
+            <h2>Indexing</h2>
+            <p>Index fields in your database for faster queries using <code
+                    class="keyword">@@index(field-name)</code>.</p>
+        </section>
+        <section>
+            <h2>CRUD Operations</h2>
+            <h3>Get All Records</h3>
+            <pre><code><span class="keyword">const</span> posts = <span class="keyword">await</span> prisma.post.findMany();</code></pre>
+
+            <h3>Filtering</h3>
+            <pre><code><span class="keyword">const</span> posts = <span class="keyword">await</span> prisma.post.findMany({
+  where: { published: <span class="keyword">true</span> }
+});</code></pre>
+
+            <h3>Ordered and Selective Query</h3>
+            <pre><code><span class="keyword">const</span> posts = <span class="keyword">await</span> prisma.post.findMany({
+  where: { published: <span class="keyword">true</span> },
+  orderBy: { createdAt: <span class="string">'desc'</span> },
+  select: { id: <span class="keyword">true</span>, title: <span class="keyword">true</span>, content: <span class="keyword">true</span> }
+});</code></pre>
+
+            <h3>Pagination</h3>
+            <pre><code><span class="keyword">const</span> posts = <span class="keyword">await</span> prisma.post.findMany({
+  take: <span class="string">1</span>, <span class="comment">// First {take} number of posts</span>
+  skip: <span class="string">1</span>  <span class="comment">// Skip {skip} number of posts</span>
+});</code></pre>
+
+            <h3>Count Records</h3>
+            <pre><code><span class="keyword">const</span> count = <span class="keyword">await</span> prisma.post.count();</code></pre>
+
+            <h3>Add New Record</h3>
+            <pre><code><span class="keyword">const</span> post = <span class="keyword">await</span> prisma.post.create({
+  data: {
+    title: <span class="string">'My first post'</span>,
+    content: <span class="string">'This is my first post'</span>
+  }
+});</code></pre>
+
+            <h3>Update Record</h3>
+            <pre><code><span class="keyword">await</span> prisma.post.update({
+  where: { id: <span class="string">1</span> },
+  data: {
+    title: <span class="string">"newTitle"</span>,
+    content: <span class="string">"newContent"</span>
+  }
+});</code></pre>
+
+            <h3>Delete Record</h3>
+            <pre><code><span class="keyword">await</span> prisma.post.delete({
+  where: { id: <span class="string">1</span> }
+});</code></pre>
+
+        </section>
+        <section>
+            <h2>Prisma Relationships</h2>
+            <h3>One-to-Many Relationship</h3>
+            <p>A one-to-many relationship allows one record in a table to be
+                associated with many records in another table. For example, a
+                user can have multiple posts:</p>
+            <pre><code>model User {
+  id       <span class="field">String</span>  <span class="keyword">@id</span> <span class="keyword">@default</span>(cuid())
+  email    <span class="field">String</span>  <span class="keyword">@unique</span>
+  name     <span class="field">String</span>?
+  posts    Post[]  <span class="comment">// One user can have many posts</span>
+}
+
+model Post {
+  id       <span class="field">String</span>  <span class="keyword">@id</span> <span class="keyword">@default</span>(cuid())
+  title    <span class="field">String</span>
+  content  <span class="field">String</span>
+  userId   <span class="field">String</span>? <span class="comment">// This is automatically generated</span>
+  user     User?   <span class="keyword">@relation</span>(fields: [userId], references: [id]) <span class="comment">// Automatically created relation</span>
+}</code></pre>
+
+            <h3>Customizing Relationships</h3>
+            <p>You can rename relationship fields to better match your
+                application's terminology:</p>
+            <pre><code>model User {
+  id       <span class="field">String</span>  <span class="keyword">@id</span> <span class="keyword">@default</span>(cuid())
+  email    <span class="field">String</span>  <span class="keyword">@unique</span>
+  name     <span class="field">String</span>?
+  authoredPosts Post[] <span class="comment">// Renamed posts to authoredPosts</span>
+}
+
+model Post {
+  id       <span class="field">String</span>  <span class="keyword">@id</span> <span class="keyword">@default</span>(cuid())
+  title    <span class="field">String</span>
+  content  <span class="field">String</span>
+  authorId <span class="field">String</span>? <span class="comment">// Renamed userId to authorId</span>
+  author   User?   <span class="keyword">@relation</span>(fields: [authorId], references: [id]) <span class="comment">// Renamed user to author</span>
+}</code></pre>
+
+            <h3>Indexes for Performance</h3>
+            <p>Use indexes to improve query performance. For example, indexing
+                the <code class="field">slug</code> field:</p>
+            <pre><code>model Post {
+  id       <span class="field">String</span>  <span class="keyword">@id</span> <span class="keyword">@default</span>(cuid())
+  slug     <span class="field">String</span>  <span class="keyword">@unique</span>
+  title    <span class="field">String</span>
+  content  <span class="field">String</span>
+
+  <span class="keyword">@@index</span>([slug]) <span class="comment">// Adds an index for faster queries on the slug field</span>
+}</code></pre>
+        </section>
+
+        <div class="pagination" style="text-align: center; padding: 20px;">
+            <button onclick="showPage(1)" class="page-btn">Page 1</button>
+            <button onclick="showPage(2)" class="page-btn">Page 2</button>
+            <button onclick="showPage(3)" class="page-btn">Page 3</button>
+        </div>
+
+        <script>
+            function showPage(pageNumber) {
+                const sections = document.querySelectorAll('section');
+                sections.forEach((section, index) => {
+                    if (index + 1 === pageNumber) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            }
+
+            // Show first page by default
+            showPage(1);
+        </script>
+    </body>
+</html>
